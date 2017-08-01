@@ -1,10 +1,17 @@
 package main
 
-import "fmt"
+import (
+	"flag"
+	"net/http"
+	"log"
+)
 
 func main()  {
-	var input string
-	fmt.Println("What's your name?")
-	fmt.Scanln(&input)
-	fmt.Printf("Hello, %s", input)
+	port := flag.String("p", "8000", "port" )
+	dir := flag.String("d","./", "dir")
+	flag.Parse()
+
+	http.Handle("/", http.FileServer(http.Dir(*dir)))
+	log.Printf("Serving %s on HTTP port: %s", *dir, *port)
+	log.Fatal(http.ListenAndServe(":" + *port,nil))
 }
